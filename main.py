@@ -1,4 +1,22 @@
 from manim import *
+import math
+
+# used to flatten a traced path
+class FlatenWrapper():
+    def __init__(self):
+        self.total_length = 0.0
+        self.last_point = None
+    
+    def flatten_line(self, point, x, start_y):
+        if self.last_point is None:
+            self.last_point = point
+        else:
+            dist = math.pow((self.last_point[0] - point[0]),2) + math.pow((self.last_point[1]-point[1]), 2)
+            dist = math.sqrt(dist)
+            self.total_length += dist
+            self.last_point = point
+                
+        return np.array([x, start_y + self.total_length, 0])
 
 class MainScene(Scene):
     def construct(self):
@@ -61,7 +79,7 @@ class MainScene(Scene):
         photon_clock_2.move_to(photon_clock.get_center())
         self.add(photon_clock_2) 
         
-        self.play(photon_clock_2.animate.shift(UP*5+LEFT), dot.animate.move_to(line1.get_center()), run_time=2)
+        self.play(photon_clock_2.animate.shift(UP*5+LEFT), dot.animate.move_to(line2.get_center()), run_time=2)
         
         
         bottom_path = TracedPath(dot.get_center, 
@@ -83,9 +101,6 @@ class MainScene(Scene):
         is_moving = False
         self.wait(1)
         
-        compare_line_1 = Line(DOWN*1.4, UP * 0.6).shift(LEFT * 0.5)
-        compare_line_2 = Line(DOWN*1.4, UP).shift(RIGHT * 0.5)
-        
         self.play(FadeOut(line1, line2, line3, line4, dot, dot_2, glow, glow_2), run_time=2)
         
         path1_static = VMobject().set_points(top_path.get_points()).set_stroke(width=3, color=ORANGE)
@@ -94,18 +109,15 @@ class MainScene(Scene):
         self.remove(top_path, bottom_path)
         self.add(path1_static, path2_static)
         
+        flattener_1 = FlatenWrapper() 
+        flattener_2 = FlatenWrapper()
         
         self.play(
-            path1_static.animate.apply_function(lambda p: np.array([p[0], 0, 0])),
-            path2_static.animate.apply_function(lambda p: np.array([p[0], 0, 0])),
+            path1_static.animate.apply_function(lambda p : flattener_1.flatten_line(p, -1, -3)),
+            path2_static.animate.apply_function(lambda p : flattener_2.flatten_line(p, 1, -3)),
             run_time=2,
             rate_func=smooth,
         ) 
 
         self.wait(5)
         
-        ''' 
-        for _ in range(5):  
-            self.play(dot.animate.move_to(line1.get_center()), rate_func=linear)
-            self.play(dot.animate.move_to(line2.get_center()), rate_func=linear) 
-        '''
