@@ -119,5 +119,11 @@ class MainScene(Scene):
             rate_func=smooth,
         ) 
 
-        self.wait(5)
+        self.wait(2)
+        
+        self.play(Indicate(path1_static))
+        self.wait(1)
+        self.play(Indicate(path2_static))
+        
+        self.wait(3)
         
