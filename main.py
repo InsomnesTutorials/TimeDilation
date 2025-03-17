@@ -15,9 +15,7 @@ class MainScene(Scene):
         glow = Dot(radius=0.3, color=YELLOW).set_opacity(0.5)
         glow.add_updater(lambda m: m.move_to(dot.get_center()))
         
-        photon_clock = VGroup(line1, line2, dot, glow)
-
-        
+        photon_clock = VGroup(line1, line2, dot, glow) 
         
         def update_dot(dot: Mobject, dt, line1, line2):
             nonlocal total_time, direction, is_moving
@@ -52,19 +50,18 @@ class MainScene(Scene):
         line3 = Line(LEFT, RIGHT).shift(UP)
         line4 = Line(LEFT, RIGHT).shift(DOWN)
         
-        dot_2 = Dot(radius=0.2, color=YELLOW).move_to(line1.get_center())
+        dot_2 = Dot(radius=0.2, color=YELLOW).move_to(line4.get_center())
         glow_2 = Dot(radius=0.3, color=YELLOW).set_opacity(0.5)
         glow_2.add_updater(lambda m: m.move_to(dot_2.get_center()))
         dot_2.add_updater(lambda m, dt: update_dot(m, dt, line3, line4))
         
-        dot_2.move_to(line3.get_center())
         photon_clock_2 = VGroup(line3, line4, dot_2, glow_2)
         
         photon_clock_2.scale(0.7)
         photon_clock_2.move_to(photon_clock.get_center())
         self.add(photon_clock_2) 
         
-        self.play(photon_clock_2.animate.shift(UP*5+LEFT))
+        self.play(photon_clock_2.animate.shift(UP*5+LEFT), dot.animate.move_to(line1.get_center()), run_time=2)
         
         
         bottom_path = TracedPath(dot.get_center, 
@@ -77,9 +74,33 @@ class MainScene(Scene):
         # add paths
         self.add(bottom_path, top_path)
         
+        total_time = 0
+        time_to_move = 3
         is_moving = True
         
-        self.play(photon_clock_2.animate.shift(RIGHT * 2), animation_func=linear, run_time=3)
+        self.play(photon_clock_2.animate.shift(RIGHT * 2), rate_func=linear, run_time=3)
+        
+        is_moving = False
+        self.wait(1)
+        
+        compare_line_1 = Line(DOWN*1.4, UP * 0.6).shift(LEFT * 0.5)
+        compare_line_2 = Line(DOWN*1.4, UP).shift(RIGHT * 0.5)
+        
+        self.play(FadeOut(line1, line2, line3, line4, dot, dot_2, glow, glow_2), run_time=2)
+        
+        path1_static = VMobject().set_points(top_path.get_points()).set_stroke(width=3, color=ORANGE)
+        path2_static = VMobject().set_points(bottom_path.get_points()).set_stroke(width=3, color=GREEN) 
+        
+        self.remove(top_path, bottom_path)
+        self.add(path1_static, path2_static)
+        
+        
+        self.play(
+            path1_static.animate.apply_function(lambda p: np.array([p[0], 0, 0])),
+            path2_static.animate.apply_function(lambda p: np.array([p[0], 0, 0])),
+            run_time=2,
+            rate_func=smooth,
+        ) 
 
         self.wait(5)
         
