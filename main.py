@@ -1,6 +1,11 @@
 from manim import *
 import math
 
+config.pixel_width = 1080
+config.pixel_height = 1920
+config.frame_width = 9
+config.frame_height = 16
+
 # used to flatten a traced path
 class FlatenWrapper():
     def __init__(self):
@@ -79,7 +84,7 @@ class MainScene(Scene):
         photon_clock_2.move_to(photon_clock.get_center())
         self.add(photon_clock_2) 
         
-        self.play(photon_clock_2.animate.shift(UP*5+LEFT), dot.animate.move_to(line2.get_center()), run_time=2)
+        self.play(photon_clock_2.animate.shift(UP*5.6+LEFT), dot.animate.move_to(line2.get_center()), run_time=2)
         
         
         bottom_path = TracedPath(dot.get_center, 
