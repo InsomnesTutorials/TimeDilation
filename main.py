@@ -30,12 +30,12 @@ class MainScene(Scene):
         direction = 1 
         is_moving = True
         
-        line1 = Line(LEFT, RIGHT).shift(UP)
-        line2 = Line(LEFT, RIGHT).shift(DOWN)
+        line1 = Line(LEFT*1.5, RIGHT*1.5).shift(UP*1.5)
+        line2 = Line(LEFT*1.5, RIGHT*1.5).shift(DOWN*1.5)
         
         # Create a glowing dot
-        dot = Dot(radius=0.2, color=YELLOW).move_to(line1.get_center())
-        glow = Dot(radius=0.3, color=YELLOW).set_opacity(0.5)
+        dot = Dot(radius=0.3, color=YELLOW).move_to(line1.get_center())
+        glow = Dot(radius=0.4, color=YELLOW).set_opacity(0.5)
         glow.add_updater(lambda m: m.move_to(dot.get_center()))
         
         photon_clock = VGroup(line1, line2, dot, glow) 
@@ -66,15 +66,15 @@ class MainScene(Scene):
         self.wait(2)
         is_moving = False
         self.play(FadeOut(photon_clock_brace, photon_clock_brace_label), ScaleInPlace(photon_clock, 0.7))
-        self.play(photon_clock.animate.shift(DOWN*3))
+        self.play(photon_clock.animate.shift(DOWN*5))
         
         
         # create a new photon clock
-        line3 = Line(LEFT, RIGHT).shift(UP)
-        line4 = Line(LEFT, RIGHT).shift(DOWN)
+        line3 = Line(LEFT*1.5, RIGHT*1.5).shift(UP*1.5)
+        line4 = Line(LEFT*1.5, RIGHT*1.5).shift(DOWN*1.5)
         
-        dot_2 = Dot(radius=0.2, color=YELLOW).move_to(line4.get_center())
-        glow_2 = Dot(radius=0.3, color=YELLOW).set_opacity(0.5)
+        dot_2 = Dot(radius=0.3, color=YELLOW).move_to(line4.get_center())
+        glow_2 = Dot(radius=0.4, color=YELLOW).set_opacity(0.5)
         glow_2.add_updater(lambda m: m.move_to(dot_2.get_center()))
         dot_2.add_updater(lambda m, dt: update_dot(m, dt, line3, line4))
         
@@ -84,15 +84,15 @@ class MainScene(Scene):
         photon_clock_2.move_to(photon_clock.get_center())
         self.add(photon_clock_2) 
         
-        self.play(photon_clock_2.animate.shift(UP*5.6+LEFT), dot.animate.move_to(line2.get_center()), run_time=2)
+        self.play(photon_clock_2.animate.shift(UP*10+LEFT*3), dot.animate.move_to(line2.get_center()), run_time=2)
         
         
         bottom_path = TracedPath(dot.get_center, 
                               stroke_color=GREEN, 
-                              stroke_width=3)
+                              stroke_width=4)
         top_path = TracedPath(dot_2.get_center, 
                               stroke_color=ORANGE,
-                              stroke_width=3)
+                              stroke_width=4)
         
         # add paths
         self.add(bottom_path, top_path)
@@ -101,7 +101,7 @@ class MainScene(Scene):
         time_to_move = 3
         is_moving = True
         
-        self.play(photon_clock_2.animate.shift(RIGHT * 2), rate_func=linear, run_time=3)
+        self.play(photon_clock_2.animate.shift(RIGHT * 5), rate_func=linear, run_time=4)
         
         is_moving = False
         self.wait(1)
@@ -118,8 +118,8 @@ class MainScene(Scene):
         flattener_2 = FlatenWrapper()
         
         self.play(
-            path1_static.animate.apply_function(lambda p : flattener_1.flatten_line(p, -1, -3)),
-            path2_static.animate.apply_function(lambda p : flattener_2.flatten_line(p, 1, -3)),
+            path1_static.animate.apply_function(lambda p : flattener_1.flatten_line(p, -2, -6)),
+            path2_static.animate.apply_function(lambda p : flattener_2.flatten_line(p, 2, -6)),
             run_time=2,
             rate_func=smooth,
         ) 
