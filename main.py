@@ -1,5 +1,6 @@
 from manim import *
 import math
+from datetime import datetime
 
 config.pixel_width = 1080
 config.pixel_height = 1920
@@ -24,6 +25,13 @@ class FlatenWrapper():
         return np.array([x, start_y + self.total_length, 0])
 
 class MainScene(Scene):
+    def wait_for_keypress(self, message="Press Enter to continue..."):
+        a = datetime.now()
+        input(message)
+        b = datetime.now()
+        
+        self.wait((b-a).total_seconds())
+        
     def construct(self):
         total_time = 0
         time_to_move = 1
@@ -36,6 +44,7 @@ class MainScene(Scene):
         # Create a glowing dot
         dot = Dot(radius=0.3, color=YELLOW).move_to(line1.get_center())
         glow = Dot(radius=0.4, color=YELLOW).set_opacity(0.5)
+        glow.move_to(dot.get_center())
         glow.add_updater(lambda m: m.move_to(dot.get_center()))
         
         photon_clock = VGroup(line1, line2, dot, glow) 
@@ -123,12 +132,13 @@ class MainScene(Scene):
             run_time=2,
             rate_func=smooth,
         ) 
-
-        self.wait(2)
         
+        self.wait(2)
         self.play(Indicate(path1_static))
-        self.wait(1)
+        self.wait(2)
         self.play(Indicate(path2_static))
         
         self.wait(3)
+        self.play(FadeOut(path1_static, path2_static))
+        self.wait(5)
         
