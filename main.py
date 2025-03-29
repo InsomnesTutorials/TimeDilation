@@ -24,7 +24,7 @@ class FlatenWrapper():
                 
         return np.array([x, start_y + self.total_length, 0])
 
-class MainScene(Scene):
+class MainScene2(Scene):
     def wait_for_keypress(self, message="Press Enter to continue..."):
         a = datetime.now()
         input(message)
@@ -68,7 +68,7 @@ class MainScene(Scene):
         self.add(dot, glow)
         dot.add_updater(lambda m, dt: update_dot(m, dt, line1, line2))
         
-        self.wait(1)
+        self.wait(4)
         photon_clock_brace = Brace(photon_clock, RIGHT)
         photon_clock_brace_label = MathTex("1s").next_to(photon_clock_brace, RIGHT, buff=0.1)
         self.play(GrowFromCenter(photon_clock_brace), Write(photon_clock_brace_label))
@@ -138,7 +138,10 @@ class MainScene(Scene):
         self.wait(2)
         self.play(Indicate(path2_static))
         
-        self.wait(3)
-        self.play(FadeOut(path1_static, path2_static))
-        self.wait(5)
+        self.wait(1)
+        speeed_of_light = MathTex("c=2.9*10^8 m/s", font_size=60)
+        self.play(Transform(VGroup(path1_static, path2_static), speeed_of_light), run_time=2)
+        self.wait(1)
+        self.play(FadeOut(speeed_of_light))
+        self.wait(1)
         
